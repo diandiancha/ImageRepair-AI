@@ -17,8 +17,8 @@
 
 This project is engineered for a superior user experience, giving you more insight and control over the image restoration process.
 
--   **Asynchronous Task Queue**: The backend uses a worker and queue system to process images in the background. Tasks are queued and processed sequentially with real-time status updates.
--   **Real-Time Status Tracking**: Each submission receives a unique Task ID. The interface automatically polls the backend to show if your image is `pending` (with its queue position) or actively `processing`, providing clear, real-time feedback.
+-   **AI-Powered Image Restoration**: Uses GFPGAN and Real-ESRGAN models to restore and enhance images with remarkable quality.
+-   **Real-Time Processing Status**: Track processing progress with status updates and estimated completion times.
 -   **Dual-AI Enhancement Pipeline**: Combines the strengths of two powerful AI models: **GFPGAN** specializes in restoring faces with stunning realism, while **Real-ESRGAN** upscales and enhances the entire image, including backgrounds.
 -   **User-Centric Interface**: A clean and modern UI featuring drag-and-drop, direct URL processing, an interactive before/after comparison slider, and multi-language support (English, 简体中文, 繁體中文, 日本語, 한국어).
 -   **Containerized for Easy Deployment**: Includes pre-configured Docker and Docker Compose files for both **CPU** and **GPU** environments, ensuring a consistent and reliable setup with a single command.
@@ -63,6 +63,70 @@ Access the web interface at: `http://localhost:5001`
 - **CUDA**: Compatible GPU with CUDA 11.8+ support
 - **RAM**: 8GB system memory (16GB recommended for large images)
 - **Storage**: 5GB free space for models and dependencies
+
+-----
+
+### Method 2: Manual Python Virtual Environment Setup
+
+This method is for developers who want to run the application outside of Docker.
+
+**Step 1: Clone Repository**
+
+```bash
+git clone https://github.com/diandiancha/ImageRepair-AI.git
+cd ImageRepair-AI
+```
+
+**Step 2: Create and Activate Virtual Environment**
+
+```bash
+python -m venv venv
+```
+
+*On Windows:*
+
+```bash
+venv\Scripts\activate
+```
+
+*On macOS/Linux:*
+
+```bash
+source venv/bin/activate
+```
+
+**Step 3: Install Dependencies**
+
+*For CPU-only:*
+
+```bash
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+pip install -r backend/requirements.txt
+```
+
+*For GPU-acceleration (NVIDIA CUDA 12.1 required):*
+
+```bash
+pip install torch==2.1.2+cu121 torchvision==0.16.2+cu121 torchaudio==2.1.2+cu121 --extra-index-url https://download.pytorch.org/whl/cu121
+pip install -r backend/requirements.txt
+```
+
+**Step 4: Download AI Models**
+
+```bash
+mkdir backend/models
+wget -O backend/models/GFPGANv1.4.pth https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.4.pth
+wget -O backend/models/RealESRGAN_x4plus.pth https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth
+```
+
+**Step 5: Run the Application**
+
+```bash
+# From the root "ImageRepair-AI" directory
+python backend/app.py
+```
+
+The application will be available at `http://localhost:5000`.
 
 <br>
 <details>
