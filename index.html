@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Repair AI - Restore & Enhance Your Photos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            /* slate-900 */
+            color: #f8fafc;
+            /* slate-50 */
+        }
+
+        .no-select {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .glassmorphism {
+            background: rgba(30, 41, 59, 0.5);
+            /* slate-800 with opacity */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.2);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.9);
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-content-wrapper {
+            position: relative;
+            margin: auto;
+            width: auto;
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+            z-index: 101;
+        }
+
+        .modal-close:hover,
+        .modal-close:focus {
+            color: #bbb;
+            text-decoration: none;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            background-color: #334155;
+            /* slate-700 */
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 1.25rem;
+            background-color: #4f46e5;
+            /* indigo-600 */
+            text-align: center;
+            line-height: 1.25rem;
+            color: white;
+            transition: width 0.4s ease;
+        }
+
+        .progress-bar.pending {
+            background-color: #4b5563;
+            /* gray-600 for pending */
+        }
+
+        .comparison-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            border-radius: 0.5rem;
+            cursor: pointer;
+        }
+
+        .comparison-container img {
+            display: block;
+            width: 100%;
+            height: auto;
+            max-height: 70vh;
+            object-fit: contain;
+        }
+
+        .comparison-after-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 50%;
+            overflow: hidden;
+            will-change: width;
+        }
+
+        .comparison-slider {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            height: 100%;
+            width: 4px;
+            background-color: rgba(255, 255, 255, 0.8);
+            cursor: ew-resize;
+            transform: translateX(-2px);
+            z-index: 10;
+        }
+
+        .comparison-slider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 40px;
+            height: 40px;
+            border: 2px solid white;
+            border-radius: 50%;
+            background-color: rgba(79, 70, 229, 0.8);
+            transform: translate(-50%, -50%);
+        }
+
+        .comparison-slider::after {
+            content: '↔';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+
+    <header id="home" class="fixed top-0 left-0 right-0 z-50 glassmorphism">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <a href="#home" class="flex items-center space-x-2">
+                        <svg class="h-8 w-8 text-indigo-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.898 20.562L16.25 22.5l-.648-1.938a3.375 3.375 0 00-2.684-2.684L11.25 18l1.938-.648a3.375 3.375 0 002.684-2.684L16.25 13.5l.648 1.938a3.375 3.375 0 002.684 2.684L21.75 18l-1.938.648a3.375 3.375 0 00-2.684 2.684z" />
+                        </svg>
+                        <span class="text-xl font-bold text-slate-100">ImageRepair AI</span>
+                    </a>
+                </div>
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#features" class="text-slate-300 hover:text-indigo-400 transition"
+                        data-translate="nav_features">Features</a>
+                    <a href="#how-it-works" class="text-slate-300 hover:text-indigo-400 transition"
+                        data-translate="nav_how_it_works">How It Works</a>
+                    <a href="#tool" class="text-slate-300 hover:text-indigo-400 transition"
+                        data-translate="nav_get_started">Get Started</a>
+                </nav>
+                <div class="flex items-center">
+                    <div class="hidden md:block relative ml-4">
+                        <select id="lang-selector"
+                            class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5">
+                            <option value="en">English</option>
+                            <option value="zh-CN">简体中文</option>
+                            <option value="zh-TW">繁體中文</option>
+                            <option value="ja">日本語</option>
+                            <option value="ko">한국어</option>
+                        </select>
+                    </div>
+                    <div class="md:hidden ml-4">
+                        <button id="mobile-menu-button" class="text-slate-300 hover:text-white">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 6h16M4 12h16m-7 6h7" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#features"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700"
+                    data-translate="nav_features">Features</a>
+                <a href="#how-it-works"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700"
+                    data-translate="nav_how_it_works">How It Works</a>
+                <a href="#tool"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700"
+                    data-translate="nav_get_started">Get Started</a>
+                <div class="pt-2">
+                    <select id="lang-selector-mobile"
+                        class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5">
+                        <option value="en">English</option>
+                        <option value="zh-CN">简体中文</option>
+                        <option value="zh-TW">繁體中文</option>
+                        <option value="ja">日本語</option>
+                        <option value="ko">한국어</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-16">
+        <section class="py-20 sm:py-28">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400"
+                    data-translate="hero_title">
+                    Breathe New Life into Your Photos
+                </h1>
+                <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-300" data-translate="hero_subtitle">
+                    Restore old, blurry, and damaged images to stunning clarity with our powerful open-source AI repair
+                    tool. It's free, fast, and incredibly simple.
+                </p>
+                <a href="#tool"
+                    class="mt-8 inline-block bg-indigo-600 text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:bg-indigo-500 transition-transform transform hover:scale-105"
+                    data-translate="hero_cta">
+                    Repair Your Image Now
+                </a>
+            </div>
+        </section>
+
+        <section id="tool" class="py-20 bg-slate-900/50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-4xl mx-auto">
+                    <div class="glassmorphism rounded-xl p-6 sm:p-10 shadow-2xl">
+                        <h2 class="text-3xl font-bold text-center mb-6" data-translate="tool_title">Upload & Repair</h2>
+                        <div id="upload-area"
+                            class="border-2 border-dashed border-slate-600 rounded-lg p-8 sm:p-12 text-center transition">
+                            <input type="file" id="image-upload" class="hidden" accept="image/*">
+                            <div id="file-upload-trigger" class="cursor-pointer hover:border-indigo-400">
+                                <div class="flex flex-col items-center text-slate-400">
+                                    <svg class="w-16 h-16 mb-4 text-slate-500" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                                    </svg>
+                                    <p class="font-semibold" data-translate="upload_prompt">Click to upload or drag and
+                                        drop
+                                    </p>
+                                    <p class="text-sm" data-translate="upload_types">PNG, JPG, WEBP, etc.</p>
+                                </div>
+                            </div>
+
+                            <div class="my-4 flex items-center">
+                                <div class="flex-grow border-t border-slate-600"></div>
+                                <span class="flex-shrink mx-4 text-slate-500 text-sm"
+                                    data-translate="upload_or">OR</span>
+                                <div class="flex-grow border-t border-slate-600"></div>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row gap-2 sm:items-center"> <input type="url"
+                                    id="image-url-input"
+                                    class="flex-grow bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2 placeholder-slate-400"
+                                    data-translate="upload_url_placeholder" placeholder="Paste image URL here">
+                                <button id="submit-url-btn"
+                                    class="bg-indigo-600 text-white font-semibold px-5 py-2 rounded-lg shadow-md hover:bg-indigo-500 transition-colors duration-200 whitespace-nowrap"
+                                    data-translate="upload_url_button">
+                                    Load Image
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="analysis-area" class="hidden text-center py-4">
+                            <div class="flex justify-around items-center">
+                                <img id="analysis-image" src=""
+                                    class="w-24 h-24 object-cover rounded-lg border-2 border-slate-600">
+                                <div id="before-clarity" class="text-lg text-slate-300"></div>
+                            </div>
+                            <div id="large-image-warning"
+                                class="hidden mt-4 text-sm text-amber-400 p-3 bg-amber-900/50 rounded-md">
+                            </div>
+                            <div id="processing-info"
+                                class="hidden mt-4 text-sm text-blue-400 p-3 bg-blue-900/50 rounded-md">
+                            </div>
+                        </div>
+
+                        <div id="processing-area" class="hidden text-center py-8">
+                            <p id="processing-main-text" class="text-slate-300 text-lg mb-4"
+                                data-translate="processing_text">AI is repairing your
+                                image...</p>
+                            <div class="progress-bar-container">
+                                <div id="progress-bar" class="progress-bar">0%</div>
+                            </div>
+                            <div id="processing-status" class="text-sm text-slate-400 mt-2"></div>
+                            <p data-translate="cancel_hint" class="text-xs text-slate-500 mt-4 max-w-md mx-auto"></p>
+                            <button id="cancel-btn"
+                                class="mt-6 inline-block bg-red-600 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:bg-red-500 transition"
+                                data-translate="cancel_button">
+                                Cancel
+                            </button>
+                        </div>
+
+                        <div id="result-area" class="hidden mt-8">
+                            <div id="main-comparison-container" class="comparison-container group">
+                                <img id="before-image" src="" alt="Original Image">
+                                <div class="comparison-after-wrapper">
+                                    <img id="after-image" src="" alt="Repaired Image">
+                                </div>
+                                <div class="comparison-slider"></div>
+                            </div>
+                            <div class="flex justify-between items-center mt-4">
+                                <div class="text-center">
+                                    <h3 class="font-semibold text-slate-300" data-translate="result_before">Before</h3>
+                                    <div id="before-resolution-display" class="text-sm text-slate-400"></div>
+                                </div>
+                                <div class="text-center">
+                                    <h3 class="font-semibold text-slate-300" data-translate="result_after">After</h3>
+                                    <div id="after-resolution-display" class="text-lg font-semibold text-green-400">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-8 text-center flex flex-col sm:flex-row justify-center items-center gap-4">
+                                <a id="download-btn" href="#" download="repaired-image.png"
+                                    class="w-full sm:w-auto inline-block bg-green-600 text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:bg-green-500 transition"
+                                    data-translate="result_download">
+                                    Download Repaired Image
+                                </a>
+                                <button id="try-another-btn"
+                                    class="w-full sm:w-auto inline-block bg-slate-600 text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:bg-slate-500 transition"
+                                    data-translate="result_try_another">
+                                    Try Another
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-it-works" class="py-20">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold" data-translate="how_title">Simple Steps to a Perfect Picture</h2>
+                    <p class="mt-2 text-lg text-slate-400" data-translate="how_subtitle">Follow our easy 3-step process
+                        to transform your images.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div class="flex flex-col items-center">
+                        <div
+                            class="flex items-center justify-center h-20 w-20 rounded-full bg-slate-800 border-2 border-indigo-500 text-indigo-400 text-3xl font-bold mb-4">
+                            1</div>
+                        <h3 class="text-xl font-semibold mb-2" data-translate="step1_title">Upload Your Image</h3>
+                        <p class="text-slate-400" data-translate="step1_desc">Drag and drop your photo or click to
+                            select a file. We support various formats like JPG, PNG, and WEBP.</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div
+                            class="flex items-center justify-center h-20 w-20 rounded-full bg-slate-800 border-2 border-indigo-500 text-indigo-400 text-3xl font-bold mb-4">
+                            2</div>
+                        <h3 class="text-xl font-semibold mb-2" data-translate="step2_title">AI Does the Magic ✨</h3>
+                        <p class="text-slate-400" data-translate="step2_desc">Our advanced AI analyzes and intelligently
+                            repairs imperfections, removes noise, and sharpens details.</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div
+                            class="flex items-center justify-center h-20 w-20 rounded-full bg-slate-800 border-2 border-indigo-500 text-indigo-400 text-3xl font-bold mb-4">
+                            3</div>
+                        <h3 class="text-xl font-semibold mb-2" data-translate="step3_title">Download & Share</h3>
+                        <p class="text-slate-400" data-translate="step3_desc">Preview your beautifully restored image
+                            and download it in high resolution to share with the world.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="features" class="py-20 bg-slate-900/50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold" data-translate="features_title">Why You'll Love ImageRepair AI</h2>
+                    <p class="mt-2 text-lg text-slate-400" data-translate="features_subtitle">Discover the powerful
+                        features that make our tool stand out.</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="feature-card glassmorphism p-6 rounded-lg text-center transition">
+                        <div class="flex justify-center mb-4"><svg class="h-12 w-12 text-indigo-400"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+                            </svg></div>
+                        <h3 class="text-xl font-semibold mb-2" data-translate="feature1_title">AI-Powered Restoration
+                        </h3>
+                        <p class="text-slate-400" data-translate="feature1_desc">Fix scratches, reduce blur, and correct
+                            colors with incredible accuracy.</p>
+                    </div>
+                    <div class="feature-card glassmorphism p-6 rounded-lg text-center transition">
+                        <div class="flex justify-center mb-4"><svg class="h-12 w-12 text-indigo-400"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5M15 15l5.25 5.25" />
+                            </svg></div>
+                        <h3 class="text-xl font-semibold mb-2" data-translate="feature2_title">Enhance & Upscale</h3>
+                        <p class="text-slate-400" data-translate="feature2_desc">Increase image resolution and clarity,
+                            making photos perfect for print or display.</p>
+                    </div>
+                    <div class="feature-card glassmorphism p-6 rounded-lg text-center transition">
+                        <div class="flex justify-center mb-4"><svg class="h-12 w-12 text-indigo-400"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                            </svg></div>
+                        <h3 class="text-xl font-semibold mb-2" data-translate="feature3_title">Privacy Focused</h3>
+                        <p class="text-slate-400" data-translate="feature3_desc">Your images are processed securely and
+                            are never stored on our servers.</p>
+                    </div>
+                    <div class="feature-card glassmorphism p-6 rounded-lg text-center transition">
+                        <div class="flex justify-center mb-4"><svg class="h-12 w-12 text-indigo-400"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+                            </svg></div>
+                        <h3 class="text-xl font-semibold mb-2" data-translate="feature4_title">Free & Open Source</h3>
+                        <p class="text-slate-400" data-translate="feature4_desc">Built on a powerful GitHub project, our
+                            tool is free for everyone. No fees.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-900">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-slate-400">
+            <p data-translate="footer_copyright">&copy; 2025 ImageRepair AI. All rights reserved.</p>
+            <p class="mt-2 text-sm" data-translate="footer_credit">Powered by the open-source community.</p>
+        </div>
+    </footer>
+
+    <div id="image-modal" class="modal">
+        <div class="modal-content-wrapper">
+            <span id="modal-close-btn" class="modal-close">&times;</span>
+            <div id="modal-comparison-container" class="comparison-container">
+                <img id="modal-before-image" src="" alt="Original Image">
+                <div class="comparison-after-wrapper">
+                    <img id="modal-after-image" src="" alt="Repaired Image">
+                </div>
+                <div class="comparison-slider"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Element -->
+    <div id="toast-notification"
+        class="fixed top-5 right-5 z-[100] p-4 rounded-lg shadow-lg text-white transition-transform transform translate-x-[calc(100%+2rem)] duration-500 ease-in-out">
+        <span id="toast-message"></span>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- 1. TRANSLATIONS (with new error messages) ---
+            const translations = {
+                en: {
+                    processing_text: "AI is repairing your image...",
+                    pending_text: "Your image is in the queue...",
+                    cancel_hint: "Note: AI processing cannot be interrupted. If you cancel, the result will be discarded after the current process finishes.",
+                    processing_status: "Processing {megapixels}MP image, estimated time: {time}",
+                    pending_status: "You are position {position} in the queue.",
+                    cancel_button: "Cancel",
+                    nav_features: "Features",
+                    nav_how_it_works: "How It Works",
+                    nav_get_started: "Get Started",
+                    hero_title: "Breathe New Life into Your Photos",
+                    hero_subtitle: "Restore old, blurry, and damaged images to stunning clarity with our powerful open-source AI repair tool. It's free, fast, and incredibly simple.",
+                    hero_cta: "Repair Your Image Now",
+                    tool_title: "Upload & Repair",
+                    upload_prompt: "Click to upload or drag and drop",
+                    upload_types: "PNG, JPG, WEBP, etc.",
+                    result_before: "Before",
+                    result_after: "After",
+                    result_download: "Download Repaired Image",
+                    result_try_another: "Try Another",
+                    clarity_before_label: "Original Resolution",
+                    clarity_after_label: "Repaired Resolution",
+                    how_title: "Simple Steps to a Perfect Picture",
+                    how_subtitle: "Follow our easy 3-step process to transform your images.",
+                    step1_title: "Upload Your Image",
+                    step1_desc: "Drag and drop your photo or click to select a file. We support various formats like JPG, PNG, and WEBP.",
+                    step2_title: "AI Does the Magic ✨",
+                    step2_desc: "Our advanced AI analyzes and intelligently repairs imperfections, removes noise, and sharpens details.",
+                    step3_title: "Download & Share",
+                    step3_desc: "Preview your beautifully restored image and download it in high resolution to share with the world.",
+                    features_title: "Why You'll Love ImageRepair AI",
+                    features_subtitle: "Discover the powerful features that make our tool stand out.",
+                    feature1_title: "AI-Powered Restoration",
+                    feature1_desc: "Fix scratches, reduce blur, and correct colors with incredible accuracy.",
+                    feature2_title: "Enhance & Upscale",
+                    feature2_desc: "Increase image resolution and clarity, making photos perfect for print or display.",
+                    feature3_title: "Privacy Focused",
+                    feature3_desc: "Your images are processed securely and are never stored on our servers.",
+                    feature4_title: "Free & Open Source",
+                    feature4_desc: "Built on a powerful GitHub project, our tool is free for everyone. No fees.",
+                    footer_copyright: "© 2025 ImageRepair AI. All rights reserved.",
+                    footer_credit: "Powered by the open-source community.",
+                    large_image_warning: "Note: Very high-resolution images may take significantly longer to process.",
+                    error_invalid_file: "Please select a valid image file.",
+                    error_start_failed: "Failed to start image repair. Please try again.",
+                    error_processing_failed: "Image processing failed: {error}",
+                    upload_or: "OR",
+                    upload_url_placeholder: "Paste image URL here",
+                    upload_url_button: "Load Image",
+                    error_invalid_url: "Please enter a valid image URL.",
+                    error_loading_url: "Failed to load image from URL. Check the URL and CORS policy."
+                },
+                'zh-CN': {
+                    processing_text: "AI正在修复您的图片...",
+                    pending_text: "您的图片正在队列中等待...",
+                    cancel_hint: "提示：AI处理无法被立即中断。如果您选择取消，系统将在当前处理完成后丢弃结果。",
+                    processing_status: "正在处理 {megapixels}MP 图片，预计时间：{time}",
+                    pending_status: "您正在队列中，当前排在第 {position} 位。",
+                    cancel_button: "取消",
+                    nav_features: "功能",
+                    nav_how_it_works: "工作原理",
+                    nav_get_started: "开始使用",
+                    hero_title: "让您的照片焕然一新",
+                    hero_subtitle: "使用我们强大的开源AI修复工具，将旧的、模糊的和损坏的图像恢复到惊人的清晰度。它免费、快速且极其简单。",
+                    hero_cta: "立即修复您的图片",
+                    tool_title: "上传与修复",
+                    upload_prompt: "点击上传或拖放文件",
+                    upload_types: "支持 PNG, JPG, WEBP 等格式",
+                    result_before: "修复前",
+                    result_after: "修复后",
+                    result_download: "下载修复后的图片",
+                    result_try_another: "再试一张",
+                    clarity_before_label: "原始分辨率",
+                    clarity_after_label: "修复后分辨率",
+                    how_title: "轻松三步，完美照片",
+                    how_subtitle: "遵循我们简单的三步流程来转换您的图像。",
+                    step1_title: "上传您的图片",
+                    step1_desc: "拖放您的照片或点击选择文件。我们支持JPG、PNG和WEBP等多种格式。",
+                    step2_title: "AI 施展魔法 ✨",
+                    step2_desc: "我们先进的AI会分析并智能修复瑕疵、去除噪音并锐化细节。",
+                    step3_title: "下载与分享",
+                    step3_desc: "预览您精美修复的图像，并下载高分辨率版本与世界分享。",
+                    features_title: "为何您会喜爱 ImageRepair AI",
+                    features_subtitle: "探索使我们的工具脱颖而出的强大功能。",
+                    feature1_title: "AI驱动的修复",
+                    feature1_desc: "以惊人的准确性修复刮痕、减少模糊并校正颜色。",
+                    feature2_title: "增强与提升分辨率",
+                    feature2_desc: "提高图像分辨率和清晰度，使照片非常适合打印或展示。",
+                    feature3_title: "注重隐私",
+                    feature3_desc: "您的图像被安全处理，绝不会存储在我们的服务器上。",
+                    feature4_title: "免费与开源",
+                    feature4_desc: "基于强大的GitHub项目构建，我们的工具对所有人免费。无任何费用。",
+                    footer_copyright: "© 2025 ImageRepair AI. 版权所有。",
+                    footer_credit: "由开源社区提供支持。",
+                    large_image_warning: "请注意：超高分辨率的图片处理时间会显著延长。",
+                    error_invalid_file: "请选择有效的图片文件。",
+                    error_start_failed: "启动图片修复失败，请重试。",
+                    error_processing_failed: "图片处理失败：{error}",
+                    upload_or: "或",
+                    upload_url_placeholder: "在此粘贴图片网址",
+                    upload_url_button: "加载图片",
+                    error_invalid_url: "请输入有效的图片网址。",
+                    error_loading_url: "从网址加载图片失败。请检查URL和跨域策略。"
+                },
+                'zh-TW': {
+                    processing_text: "AI正在修復您的圖片...",
+                    pending_text: "您的圖片正在隊列中等待...",
+                    cancel_hint: "提示：AI處理無法被立即中斷。如果您選擇取消，系統將在當前處理完成後丟棄結果。",
+                    processing_status: "正在處理 {megapixels}MP 圖片，預計時間：{time}",
+                    pending_status: "您正在隊列中，當前排在第 {position} 位。",
+                    cancel_button: "取消",
+                    nav_features: "功能",
+                    nav_how_it_works: "運作方式",
+                    nav_get_started: "開始使用",
+                    hero_title: "為您的照片注入新的生命",
+                    hero_subtitle: "使用我們強大的開源AI修復工具，將舊的、模糊的和損壞的圖像恢復到驚人的清晰度。它免費、快速且極其簡單。",
+                    hero_cta: "立即修復您的圖片",
+                    tool_title: "上傳與修復",
+                    upload_prompt: "點擊上傳或拖放文件",
+                    upload_types: "支援 PNG, JPG, WEBP 等格式",
+                    result_before: "修復前",
+                    result_after: "修復後",
+                    result_download: "下載修復後的圖片",
+                    result_try_another: "再試一張",
+                    clarity_before_label: "原始解析度",
+                    clarity_after_label: "修復後解析度",
+                    how_title: "簡單三步，完美照片",
+                    how_subtitle: "遵循我們簡單的三步流程來轉換您的圖像。",
+                    step1_title: "上傳您的圖片",
+                    step1_desc: "拖放您的照片或點擊選擇文件。我們支援JPG、PNG和WEBP等多種格式。",
+                    step2_title: "AI 施展魔法 ✨",
+                    step2_desc: "我們先進的AI會分析並智能修復瑕疵、去除噪音並銳化細節。",
+                    step3_title: "下載與分享",
+                    step3_desc: "預覽您精美修復的圖像，並下載高解析度版本與世界分享。",
+                    features_title: "為何您會喜愛 ImageRepair AI",
+                    features_subtitle: "探索使我們的工具脫穎而出的強大功能。",
+                    feature1_title: "AI驅動的修復",
+                    feature1_desc: "以驚人的準確性修復刮痕、減少模糊並校正顏色。",
+                    feature2_title: "增強與提升解析度",
+                    feature2_desc: "提高圖像解析度和清晰度，使照片非常適合打印或展示。",
+                    feature3_title: "注重隱私",
+                    feature3_desc: "您的圖像被安全處理，絕不會儲存在我們的伺服器上。",
+                    feature4_title: "免費與開源",
+                    feature4_desc: "基於強大的GitHub項目構建，我們的工具對所有人免費。無任何費用。",
+                    footer_copyright: "© 2025 ImageRepair AI. 版權所有。",
+                    footer_credit: "由開源社群提供支援。",
+                    large_image_warning: "請注意：超高解析度的圖片處理時間會顯著延長。",
+                    error_invalid_file: "請選擇有效的圖片文件。",
+                    error_start_failed: "啟動圖片修復失敗，請重試。",
+                    error_processing_failed: "圖片處理失敗：{error}",
+                    upload_or: "或",
+                    upload_url_placeholder: "在此貼上圖片網址",
+                    upload_url_button: "載入圖片",
+                    error_invalid_url: "請輸入有效的圖片網址。",
+                    error_loading_url: "從網址載入圖片失敗。請檢查URL和跨域策略。"
+                },
+                ja: {
+                    processing_text: "AIが画像を修復しています...",
+                    pending_text: "あなたの画像はキューで待機中です...",
+                    cancel_hint: "注意：AI処理は中断できません。キャンセルした場合、現在の処理が完了した後に結果は破棄されます。",
+                    processing_status: "{megapixels}MP画像を処理中、推定時間：{time}",
+                    pending_status: "あなたはキューの{position}番目にいます。",
+                    cancel_button: "キャンセル",
+                    nav_features: "特徴",
+                    nav_how_it_works: "使い方",
+                    nav_get_started: "始める",
+                    hero_title: "写真に新しい命を吹き込む",
+                    hero_subtitle: "強力なオープンソースAI修復ツールで、古く、ぼやけ、損傷した画像を驚くほどの鮮明さに復元します。無料で、速く、非常に簡単です。",
+                    hero_cta: "今すぐ画像を修復",
+                    tool_title: "アップロード＆修復",
+                    upload_prompt: "クリックしてアップロードまたはドラッグ＆ドロップ",
+                    upload_types: "PNGやJPG、WEBPなど",
+                    result_before: "修復前",
+                    result_after: "修復後",
+                    result_download: "修復した画像をダウンロード",
+                    result_try_another: "別の画像を試す",
+                    clarity_before_label: "元の解像度",
+                    clarity_after_label: "修復後の解像度",
+                    how_title: "完璧な写真への簡単なステップ",
+                    how_subtitle: "簡単な3ステップのプロセスに従って、画像を変換します。",
+                    step1_title: "画像をアップロード",
+                    step1_desc: "写真をドラッグアンドドロップするか、クリックしてファイルを選択します。JPG、PNG、WEBPなど、さまざまな形式をサポートしています。",
+                    step2_title: "AIが魔法をかける ✨",
+                    step2_desc: "当社の高度なAIが欠陥を分析・修復し、ノイズを除去し、ディテールを鮮明にします。",
+                    step3_title: "ダウンロード＆共有",
+                    step3_desc: "美しく復元された画像をプレビューし、高解像度でダウンロードして世界と共有しましょう。",
+                    features_title: "ImageRepair AIを気に入る理由",
+                    features_subtitle: "私たちのツールを際立たせる強力な機能をご覧ください。",
+                    feature1_title: "AIによる復元",
+                    feature1_desc: "傷を修正し、ぼかしを減らし、色を驚くほどの精度で補正します。",
+                    feature2_title: "強化＆アップスケール",
+                    feature2_desc: "画像の解像度と鮮明度を向上させ、印刷やディスプレイに最適な写真を作成します。",
+                    feature3_title: "プライバシー重視",
+                    feature3_desc: "あなたの画像は安全に処理され、私たちのサーバーに保存されることはありません。",
+                    feature4_title: "無料＆オープンソース",
+                    feature4_desc: "強力なGitHubプロジェクトに基づいて構築されており、誰でも無料で利用できます。料金はかかりません。",
+                    footer_copyright: "© 2025 ImageRepair AI. 全著作権所有。",
+                    footer_credit: "オープンソースコミュニティによって提供されています。",
+                    large_image_warning: "注意：解像度が非常に高い画像は、処理に時間がかかる場合があります。",
+                    error_invalid_file: "有効な画像ファイルを選択してください。",
+                    error_start_failed: "画像修復の開始に失敗しました。もう一度お試しください。",
+                    error_processing_failed: "画像処理に失敗しました：{error}",
+                    upload_or: "または",
+                    upload_url_placeholder: "ここに画像URLを貼り付け",
+                    upload_url_button: "画像を読み込む",
+                    error_invalid_url: "有効な画像URLを入力してください。",
+                    error_loading_url: "URLからの画像の読み込みに失敗しました。URLとCORSポリシーを確認してください。"
+                },
+                ko: {
+                    processing_text: "AI가 이미지를 복원하고 있습니다...",
+                    pending_text: "이미지가 대기열에 있습니다...",
+                    cancel_hint: "참고: AI 처리 중에는 중단할 수 없습니다. 취소하면 현재 프로세스가 완료된 후 결과가 폐기됩니다.",
+                    processing_status: "{megapixels}MP 이미지 처리 중, 예상 시간: {time}",
+                    pending_status: "대기열에서 {position}번째에 있습니다.",
+                    cancel_button: "취소",
+                    nav_features: "기능",
+                    nav_how_it_works: "작동 방식",
+                    nav_get_started: "시작하기",
+                    hero_title: "사진에 새 생명을 불어넣으세요",
+                    hero_subtitle: "강력한 오픈 소스 AI 복원 도구를 사용하여 오래되고 흐릿하며 손상된 이미지를 놀라운 선명도로 복원하세요. 무료이며 빠르고 매우 간단합니다.",
+                    hero_cta: "지금 이미지 복원하기",
+                    tool_title: "업로드 및 복원",
+                    upload_prompt: "클릭하여 업로드하거나 드래그 앤 드롭하세요",
+                    upload_types: "PNG, JPG, WEBP 등",
+                    result_before: "복원 전",
+                    result_after: "복원 후",
+                    result_download: "복원된 이미지 다운로드",
+                    result_try_another: "다른 이미지 시도",
+                    clarity_before_label: "원본 해상도",
+                    clarity_after_label: "복원 후 해상도",
+                    how_title: "완벽한 사진을 위한 간단한 단계",
+                    how_subtitle: "간단한 3단계 과정을 따라 이미지를 변환하세요。",
+                    step1_title: "이미지 업로드",
+                    step1_desc: "사진을 드래그 앤 드롭하거나 클릭하여 파일을 선택하세요. JPG, PNG, WEBP 등 다양한 형식을 지원합니다.",
+                    step2_title: "AI의 마법 ✨",
+                    step2_desc: "고급 AI가 결함을 분석하고 지능적으로 복원하며 노이즈를 제거하고 디테일을 선명하게 합니다.",
+                    step3_title: "다운로드 및 공유",
+                    step3_desc: "아름답게 복원된 이미지를 미리 보고 고해상도로 다운로드하여 세상과 공유하세요.",
+                    features_title: "ImageRepair AI를 좋아하게 될 이유",
+                    features_subtitle: "우리 도구를 돋보이게 하는 강력한 기능을 발견하세요.",
+                    feature1_title: "AI 기반 복원",
+                    feature1_desc: "놀라운 정확도로 긁힘을 수정하고 흐림을 줄이며 색상을 보정합니다.",
+                    feature2_title: "향상 및 업스케일",
+                    feature2_desc: "이미지 해상도와 선명도를 높여 인쇄 또는 디스플레이에 완벽한 사진을 만듭니다.",
+                    feature3_title: "개인 정보 보호 중심",
+                    feature3_desc: "이미지는 안전하게 처리되며 서버에 저장되지 않습니다.",
+                    feature4_title: "무료 및 오픈 소스",
+                    feature4_desc: "강력한 GitHub 프로젝트를 기반으로 구축되어 누구나 무료로 사용할 수 있습니다. 수수료가 없습니다.",
+                    footer_copyright: "© 2025 ImageRepair AI. 모든 권리 보유.",
+                    footer_credit: "오픈 소스 커뮤니티에 의해 구동됩니다.",
+                    large_image_warning: "참고: 초고해상도 이미지는 처리하는 데 훨씬 더 오래 걸릴 수 있습니다.",
+                    error_invalid_file: "유효한 이미지 파일을 선택하십시오.",
+                    error_start_failed: "이미지 복구를 시작하지 못했습니다. 다시 시도하십시오.",
+                    error_processing_failed: "이미지 처리 실패: {error}",
+                    upload_or: "또는",
+                    upload_url_placeholder: "이미지 URL을 여기에 붙여넣으세요",
+                    upload_url_button: "이미지 로드",
+                    error_invalid_url: "유효한 이미지 URL을 입력하십시오.",
+                    error_loading_url: "URL에서 이미지를 로드하지 못했습니다. URL 및 CORS 정책을 확인하십시오."
+                }
+            };
+
+            // --- 2. ELEMENT SELECTORS ---
+            const processingArea = document.getElementById('processing-area');
+            const processingMainText = document.getElementById('processing-main-text');
+            const progressBar = document.getElementById('progress-bar');
+            const processingStatus = document.getElementById('processing-status');
+            const langSelector = document.getElementById('lang-selector');
+            const langSelectorMobile = document.getElementById('lang-selector-mobile');
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const uploadArea = document.getElementById('upload-area');
+            const imageUpload = document.getElementById('image-upload');
+            const analysisArea = document.getElementById('analysis-area');
+            const analysisImage = document.getElementById('analysis-image');
+            const resultArea = document.getElementById('result-area');
+            const beforeImage = document.getElementById('before-image');
+            const afterImage = document.getElementById('after-image');
+            const downloadBtn = document.getElementById('download-btn');
+            const tryAnotherBtn = document.getElementById('try-another-btn');
+            const cancelBtn = document.getElementById('cancel-btn');
+            const beforeClarityEl = document.getElementById('before-clarity');
+            const afterResolutionDisplay = document.getElementById('after-resolution-display');
+            const beforeResolutionDisplay = document.getElementById('before-resolution-display');
+            const largeImageWarning = document.getElementById('large-image-warning');
+            const imageModal = document.getElementById('image-modal');
+            const modalCloseBtn = document.getElementById('modal-close-btn');
+            const mainComparisonContainer = document.getElementById('main-comparison-container');
+            const modalComparisonContainer = document.getElementById('modal-comparison-container');
+            const modalBeforeImage = document.getElementById('modal-before-image');
+            const modalAfterImage = document.getElementById('modal-after-image');
+            const fileUploadTrigger = document.getElementById('file-upload-trigger');
+            const imageUrlInput = document.getElementById('image-url-input');
+            const submitUrlBtn = document.getElementById('submit-url-btn');
+
+            // --- 3. STATE VARIABLES ---
+            let currentLang = 'en';
+            let currentTaskId = null;
+            let statusCheckInterval = null;
+            let progressInterval = null;
+            let isProcessing = false;
+            let hasStartedProgressBar = false;
+            let lastKnownStatus = '';
+            let toastTimeout;
+
+            // --- 4. HELPER FUNCTIONS ---
+
+            function showToast(message, isError = false) {
+                const toast = document.getElementById('toast-notification');
+                const toastMessage = document.getElementById('toast-message');
+                if (!toast || !toastMessage) return;
+
+                clearTimeout(toastTimeout);
+
+                toastMessage.textContent = message;
+                // Reset classes
+                toast.className = 'fixed top-5 right-5 z-[100] p-4 rounded-lg shadow-lg text-white transition-transform transform duration-500 ease-in-out';
+
+                if (isError) {
+                    toast.classList.add('bg-red-600');
+                } else {
+                    toast.classList.add('bg-green-600');
+                }
+
+                // Show toast
+                toast.classList.remove('translate-x-[calc(100%+2rem)]');
+
+                // Hide after 4 seconds
+                toastTimeout = setTimeout(() => {
+                    toast.classList.add('translate-x-[calc(100%+2rem)]');
+                }, 4000);
+            }
+
+
+            function getResolutionLabel(width, height) {
+                let label = '';
+                if (height >= 4320) label = '8K UHD';
+                else if (height >= 2160) label = '4K UHD';
+                else if (height >= 1080) label = 'FHD (1080p)';
+                else if (height >= 720) label = 'HD (720p)';
+                else label = 'SD';
+                return `${label} <span class="block text-xs">(${width} x ${height})</span>`;
+            }
+
+            function setLanguage(lang) {
+                currentLang = lang;
+                document.querySelectorAll('[data-translate]').forEach(el => {
+                    const key = el.getAttribute('data-translate');
+                    const translation = (translations[lang] && translations[lang][key]) || (translations['en'] && translations['en'][key]);
+                    if (translation) {
+                        el.innerHTML = translation;
+                    }
+                });
+                if (langSelector) langSelector.value = lang;
+                if (langSelectorMobile) langSelectorMobile.value = lang;
+                document.documentElement.lang = lang;
+            }
+
+            function getInitialLanguage() {
+                const browserLang = navigator.language || navigator.userLanguage;
+                if (browserLang.startsWith('zh-CN')) return 'zh-CN';
+                if (browserLang.startsWith('zh')) return 'zh-TW';
+                if (browserLang.startsWith('ja')) return 'ja';
+                if (browserLang.startsWith('ko')) return 'ko';
+                return 'en';
+            }
+
+            function formatTime(seconds) {
+                if (seconds < 60) return `${Math.round(seconds)}s`;
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = Math.round(seconds % 60);
+                return remainingSeconds === 0 ? `${minutes}min` : `${minutes}m${remainingSeconds}s`;
+            }
+
+            function resetUI() {
+                if (currentTaskId && isProcessing) {
+                    fetch(`/api/cancel/${currentTaskId}`, { method: 'POST' });
+                }
+                currentTaskId = null;
+                clearInterval(statusCheckInterval);
+                clearTimeout(progressInterval);
+
+                isProcessing = false;
+                hasStartedProgressBar = false;
+                lastKnownStatus = '';
+                originalFileName = '';
+
+                uploadArea.classList.remove('hidden');
+                analysisArea.classList.add('hidden');
+                processingArea.classList.add('hidden');
+                resultArea.classList.add('hidden');
+                largeImageWarning.classList.add('hidden');
+                imageUpload.value = '';
+            }
+
+            function handleImageData(imageDataUrl) {
+                const img = new Image();
+                img.onload = () => {
+                    uploadArea.classList.add('hidden');
+                    analysisImage.src = imageDataUrl;
+                    beforeClarityEl.innerHTML = `${translations[currentLang].clarity_before_label}: <div class="font-bold text-xl">${getResolutionLabel(img.width, img.height)}</div>`;
+
+                    if (img.width * img.height > 12 * 1000 * 1000) {
+                        largeImageWarning.innerHTML = translations[currentLang].large_image_warning;
+                        largeImageWarning.classList.remove('hidden');
+                    }
+
+                    analysisArea.classList.remove('hidden');
+                    setTimeout(() => startProcessing(imageDataUrl), 1500);
+                };
+                img.onerror = () => {
+                    showToast(translations[currentLang].error_invalid_file, true);
+                    resetUI();
+                };
+                img.src = imageDataUrl;
+            }
+
+            function handleFile(file) {
+                if (!file || !file.type.startsWith('image/')) {
+                    showToast(translations[currentLang].error_invalid_file || translations.en.error_invalid_file, true);
+                    return;
+                }
+                originalFileName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    handleImageData(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+
+            async function handleUrlSubmit() {
+                const url = imageUrlInput.value.trim();
+                if (!url) {
+                    showToast(translations[currentLang].error_invalid_url, true);
+                    return;
+                }
+
+                // 从URL中提取文件名
+                try {
+                    const urlObj = new URL(url);
+                    const pathname = urlObj.pathname;
+                    const filename = pathname.split('/').pop();
+                    originalFileName = filename ? filename.substring(0, filename.lastIndexOf('.')) || filename : 'image';
+                } catch {
+                    originalFileName = 'image';
+                }
+
+                submitUrlBtn.disabled = true;
+                submitUrlBtn.textContent = 'Loading...';
+
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const blob = await response.blob();
+                    if (!blob.type.startsWith('image/')) {
+                        throw new Error('URL did not point to a valid image.');
+                    }
+
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        handleImageData(reader.result);
+                    };
+                    reader.readAsDataURL(blob);
+
+                } catch (error) {
+                    console.error("URL fetch error:", error);
+                    showToast(translations[currentLang].error_loading_url, true);
+                } finally {
+                    submitUrlBtn.disabled = false;
+                    submitUrlBtn.innerHTML = translations[currentLang].upload_url_button;
+                }
+            }
+
+            function getResolutionShortLabel(width, height) {
+                if (height >= 4320) return '8K';
+                else if (height >= 2160) return '4K';
+                else if (height >= 1080) return 'FHD';
+                else if (height >= 720) return 'HD';
+                else return 'SD';
+            }
+
+            function startProcessing(imageDataUrl) {
+                isProcessing = true;
+                analysisArea.classList.add('hidden');
+                processingArea.classList.remove('hidden');
+
+                fetch('/api/repair', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image: imageDataUrl }),
+                })
+                    .then(response => response.ok ? response.json() : Promise.reject(new Error(response.statusText || 'Network error')))
+                    .then(data => {
+                        if (data.error) return Promise.reject(new Error(data.error));
+                        currentTaskId = data.task_id;
+                        startStatusCheck(data);
+                    })
+                    .catch(error => {
+                        console.error('Failed to start repair:', error);
+                        const errorMsg = translations[currentLang].error_start_failed || translations.en.error_start_failed;
+                        showToast(errorMsg, true);
+                        resetUI();
+                    });
+            }
+
+            function startProgressBar() {
+                if (hasStartedProgressBar) return;
+                hasStartedProgressBar = true;
+
+                let progress = 0;
+                progressBar.classList.remove('pending');
+
+                const advance = () => {
+                    if (progress >= 99 || !isProcessing) return;
+                    let increment = (progress < 78) ? (Math.random() * 1.4) : (Math.random() * 0.3);
+                    progress = Math.min(progress + increment, 99);
+                    progressBar.style.width = `${progress.toFixed(2)}%`;
+                    progressBar.textContent = `${Math.floor(progress)}%`;
+                    progressInterval = setTimeout(advance, 200 + Math.random() * 300);
+                };
+                advance();
+            }
+
+            function startStatusCheck(initialData) {
+                updateStatusUI(Object.assign({}, initialData, { image_info: initialData.image_info }));
+
+                statusCheckInterval = setInterval(() => {
+                    if (!currentTaskId || !isProcessing) {
+                        clearInterval(statusCheckInterval);
+                        return;
+                    }
+
+                    fetch(`/api/status/${currentTaskId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status !== lastKnownStatus) {
+                                updateStatusUI(Object.assign({}, data, { image_info: initialData.image_info }));
+                                lastKnownStatus = data.status;
+                            }
+                            if (data.status === 'completed') {
+                                handleTaskComplete(data.result);
+                            } else if (data.status === 'error') {
+                                throw new Error(data.error || 'Processing failed');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Status check failed:', error);
+                            const errorMsg = (translations[currentLang].error_processing_failed || translations.en.error_processing_failed)
+                                .replace('{error}', error.message);
+                            showToast(errorMsg, true);
+                            resetUI();
+                        });
+                }, 2000);
+            }
+
+            function updateStatusUI(data) {
+                if (data.status === 'pending') {
+                    processingMainText.textContent = translations[currentLang].pending_text;
+                    let statusText = translations[currentLang].pending_status.replace('{position}', data.position || 'N/A');
+                    processingStatus.textContent = statusText;
+                    progressBar.classList.add('pending');
+                    progressBar.style.width = '100%';
+                    progressBar.textContent = 'QUEUED';
+                } else if (data.status === 'processing') {
+                    processingMainText.textContent = translations[currentLang].processing_text;
+                    if (data.image_info) {
+                        const { megapixels, estimated_time_seconds } = data.image_info;
+                        processingStatus.textContent = translations[currentLang].processing_status
+                            .replace('{megapixels}', megapixels)
+                            .replace('{time}', formatTime(estimated_time_seconds));
+                    } else {
+                        processingStatus.textContent = "Processing started...";
+                    }
+                    startProgressBar();
+                }
+            }
+
+            function handleTaskComplete(result) {
+                isProcessing = false;
+                clearInterval(statusCheckInterval);
+                clearTimeout(progressInterval);
+
+                progressBar.style.width = '100%';
+                progressBar.textContent = '100%';
+
+                const repairedImageUrl = result.repairedImage;
+                const repairedImg = new Image();
+                repairedImg.onload = () => {
+                    const originalImg = new Image();
+                    originalImg.onload = () => {
+                        beforeResolutionDisplay.innerHTML = getResolutionLabel(originalImg.width, originalImg.height);
+                        afterResolutionDisplay.innerHTML = getResolutionLabel(repairedImg.width, repairedImg.height);
+                        beforeImage.src = analysisImage.src;
+                        afterImage.src = repairedImageUrl;
+
+                        // 生成动态文件名
+                        const resolutionLabel = getResolutionShortLabel(repairedImg.width, repairedImg.height);
+                        const baseFileName = originalFileName || 'repaired-image';
+                        const downloadFileName = `${baseFileName}-repair(${resolutionLabel}).png`;
+
+                        downloadBtn.href = repairedImageUrl;
+                        downloadBtn.download = downloadFileName;
+
+                        setTimeout(() => {
+                            processingArea.classList.add('hidden');
+                            resultArea.classList.remove('hidden');
+                        }, 500);
+                    };
+                    originalImg.src = analysisImage.src;
+                };
+                repairedImg.src = repairedImageUrl;
+            }
+
+            function initComparisonSlider(container) {
+                if (!container) return;
+                const slider = container.querySelector('.comparison-slider');
+                const afterWrapper = container.querySelector('.comparison-after-wrapper');
+                if (!slider || !afterWrapper) return;
+                let isDragging = false;
+                const moveSlider = (x) => {
+                    const rect = container.getBoundingClientRect();
+                    let pos = (x - rect.left) / rect.width * 100;
+                    pos = Math.max(0, Math.min(100, pos));
+                    afterWrapper.style.width = pos + '%';
+                    slider.style.left = pos + '%';
+                };
+                const startDrag = (e) => { e.preventDefault(); isDragging = true; document.body.classList.add('no-select'); };
+                const stopDrag = () => { if (isDragging) { isDragging = false; document.body.classList.remove('no-select'); } };
+                slider.addEventListener('mousedown', startDrag);
+                slider.addEventListener('touchstart', startDrag, { passive: false });
+                window.addEventListener('mouseup', stopDrag);
+                window.addEventListener('touchend', stopDrag);
+                window.addEventListener('mousemove', (e) => { if (isDragging) moveSlider(e.clientX); });
+                window.addEventListener('touchmove', (e) => { if (isDragging) moveSlider(e.touches[0].clientX); }, { passive: false });
+                document.body.addEventListener('mouseleave', stopDrag);
+            }
+
+            // --- 5. INITIALIZATIONS & EVENT LISTENERS ---
+            setLanguage(getInitialLanguage());
+            langSelector.addEventListener('change', (e) => setLanguage(e.target.value));
+            langSelectorMobile.addEventListener('change', (e) => setLanguage(e.target.value));
+            mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+            document.querySelectorAll('#mobile-menu a').forEach(link => link.addEventListener('click', () => mobileMenu.classList.add('hidden')));
+
+            // Listeners for file upload (drag/drop and click)
+            fileUploadTrigger.addEventListener('click', () => imageUpload.click());
+            uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('border-indigo-400'); });
+            uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('border-indigo-400'));
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('border-indigo-400');
+                if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+            });
+            imageUpload.addEventListener('change', (e) => { if (e.target.files.length) handleFile(e.target.files[0]); });
+            submitUrlBtn.addEventListener('click', handleUrlSubmit);
+            imageUrlInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleUrlSubmit();
+                }
+            });
+
+            tryAnotherBtn.addEventListener('click', resetUI);
+            cancelBtn.addEventListener('click', resetUI);
+
+            initComparisonSlider(mainComparisonContainer);
+            initComparisonSlider(modalComparisonContainer);
+
+            if (mainComparisonContainer) mainComparisonContainer.addEventListener('click', (e) => {
+                if (!e.target.closest('.comparison-slider')) {
+                    modalBeforeImage.src = beforeImage.src;
+                    modalAfterImage.src = afterImage.src;
+                    imageModal.style.display = 'flex';
+                }
+            });
+
+            if (modalCloseBtn) modalCloseBtn.addEventListener('click', () => { imageModal.style.display = 'none'; });
+
+            if (imageModal) imageModal.addEventListener('click', (e) => {
+                if (e.target === imageModal) {
+                    imageModal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>

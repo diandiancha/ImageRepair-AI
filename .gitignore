@@ -1,0 +1,8 @@
+﻿# Ignore the downloaded AI models 
+backend/models/ 
+# Ignore Python cache files 
+__pycache__/ 
+*.pyc 
+# Ignore OS-specific files 
+.DS_Store 
+Thumbs.db

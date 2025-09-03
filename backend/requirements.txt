@@ -1,0 +1,12 @@
+﻿# --- AI Model Specific Libraries ---
+gfpgan==1.3.8
+basicsr==1.4.2
+realesrgan==0.3.0
+
+# --- General Purpose & Web Libraries ---
+numpy==1.26.4
+opencv-python
+Pillow
+Flask
+Flask-Cors
+requests

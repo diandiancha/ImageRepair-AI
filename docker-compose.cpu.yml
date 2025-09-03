@@ -1,0 +1,15 @@
+# docker-compose.cpu.yml
+
+version: '3.8'
+
+services:
+  image-repair-cpu:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile.cpu
+    ports:
+      - "5002:5000"
+    environment:
+      - FLASK_ENV=production
+    restart: unless-stopped
+    container_name: image-repair-cpu

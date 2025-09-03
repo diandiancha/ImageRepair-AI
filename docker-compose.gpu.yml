@@ -1,0 +1,18 @@
+services:
+  image-repair-gpu:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile.gpu
+    ports:
+      - "5001:5000"
+    environment:
+      - FLASK_ENV=production
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
+    container_name: image-repair-gpu
