@@ -1,7 +1,8 @@
+````markdown
 # ImageRepair AI
 
 <div align="center">
-  <p>An intelligent, production-ready AI tool to restore and enhance your photos with real-time feedback.</p>
+  <p>An intelligent AI tool to restore and enhance your photos, built with a robust backend to provide a smooth and transparent processing experience.</p>
 </div>
 
 <div align="center">
@@ -15,17 +16,17 @@
 
 ## Why is This Project Different?
 
-Ever used an online AI tool and been left staring at a spinning loader with no idea what's happening? ImageRepair AI is engineered to be different. It's not just a script, but a robust service designed for a transparent and interactive user experience.
+While many AI tools exist, this project is engineered for a better user experience, giving you more insight and control over the image restoration process.
 
--   **Robust Queuing System**: We use an asynchronous, multi-worker backend. If multiple users submit images, the system queues them fairly and processes them efficiently without freezing. You'll even know your position in the queue.
+-   **Responsive Queuing System**: The backend is built to handle image processing in the background. This means that if you upload another image while one is already being processed, the application won't freeze or crash. Your new submission is simply added to a queue, and you can see its position and status, ensuring no work is lost.
 
--   **Real-Time Status & Control**: Every job you submit gets a unique Task ID. Use our API to get live updates on your image's status—from "pending" to "processing" to "completed". If you change your mind, you can even request to cancel an ongoing task.
+-   **Real-Time Status Tracking**: Ever wondered how long an AI process will take? This tool provides a unique Task ID for every image you submit. The interface automatically updates to show you if your image is "pending" in the queue or actively "processing," giving you clear feedback on what's happening.
 
--   **Dual-AI Enhancement Pipeline**: We combine the strengths of two powerful AI models. **GFPGAN** focuses on restoring faces with stunning realism, while **Real-ESRGAN** upscales and enhances the entire image background. The result is a comprehensively repaired photo.
+-   **Dual-AI Enhancement Pipeline**: To achieve the best results, the application combines the strengths of two powerful AI models. **GFPGAN** specializes in restoring faces with stunning realism, while **Real-ESRGAN** upscales and enhances the entire image background.
 
 -   **User-Centric Interface**: The frontend is designed for a smooth workflow, featuring a multi-language interface, an interactive before/after comparison slider, and the ability to process images directly from a URL.
 
--   **Built for Deployment**: With pre-configured Docker setups for both CPU and GPU, you can deploy this project with a single command, confident that the environment is consistent and reliable.
+-   **Built for Easy Deployment**: With pre-configured Docker setups for both CPU and GPU, you can deploy this project on your own machine with a single command, confident that the environment is consistent and reliable.
 
 ## 🚀 Getting Started
 
@@ -37,106 +38,150 @@ The recommended way to run this project is with Docker, which handles all depend
 -   [Docker](https://www.docker.com/get-started) & [Docker Compose](https://docs.docker.com/compose/install/)
 -   **(For GPU acceleration)**: A compatible [NVIDIA GPU with drivers](https://www.nvidia.com/Download/index.aspx) and the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html).
 
-### Installation & Launch
+### Installation & Launch with Docker
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/diandiancha/ImageRepair-AI.git
-    cd ImageRepair-AI
-    ```
+#### **CPU Version (works on any system)**
 
-2.  **Launch with Docker Compose:**
+```bash
+git clone [https://github.com/diandiancha/ImageRepair-AI.git](https://github.com/diandiancha/ImageRepair-AI.git)
+````
 
-    -   **For CPU Version** (works on any system):
-        ```bash
-        docker-compose -f docker-compose.cpu.yml up --build
-        ```
-        - Access the web interface at: `http://localhost:5002`
+```bash
+cd ImageRepair-AI
+```
 
-    -   **For GPU Version** (for high performance with an NVIDIA GPU):
-        ```bash
-        docker-compose -f docker-compose.gpu.yml up --build
-        ```
-        - Access the web interface at: `http://localhost:5001`
+```bash
+docker-compose -f docker-compose.cpu.yml up --build
+```
 
-The `--build` flag is only necessary for the first launch.
+  - Access the web interface at: `http://localhost:5002`
 
----
+#### **GPU Version (for high performance with an NVIDIA GPU)**
 
-<details>
-<summary>💻 For Developers: Manual Python Virtual Environment Setup</summary>
+```bash
+git clone [https://github.com/diandiancha/ImageRepair-AI.git](https://github.com/diandiancha/ImageRepair-AI.git)
+```
+
+```bash
+cd ImageRepair-AI
+```
+
+```bash
+docker-compose -f docker-compose.gpu.yml up --build
+```
+
+  - Access the web interface at: `http://localhost:5001`
+
+-----
+
+\<details\>
+\<summary\>💻 **For Developers: Manual Python Virtual Environment Setup**\</summary\>
 
 This method is for users who want to run the application outside of Docker.
 
-1.  **Create and Activate Virtual Environment**
+#### **Step 1: Clone Repository**
+
+```bash
+git clone [https://github.com/diandiancha/ImageRepair-AI.git](https://github.com/diandiancha/ImageRepair-AI.git)
+```
+
+```bash
+cd ImageRepair-AI
+```
+
+#### **Step 2: Create and Activate Virtual Environment**
+
+```bash
+python -m venv venv
+```
+
+  - On Windows:
+
+<!-- end list -->
+
+```bash
+venv\Scripts\activate
+```
+
+  - On macOS/Linux:
+
+<!-- end list -->
+
+```bash
+source venv/bin/activate
+```
+
+#### **Step 3: Install Dependencies**
+
+  - **For CPU-only:**
+
     ```bash
-    # From the project's root directory
-    python -m venv venv
-    
-    # On Windows:
-    venv\Scripts\activate
-    
-    # On macOS/Linux:
-    source venv/bin/activate
+    pip install torch torchvision torchaudio --index-url [https://download.pytorch.org/whl/cpu](https://download.pytorch.org/whl/cpu)
     ```
 
-2.  **Install Dependencies**
-    The dependencies are listed in `backend/requirements.txt`.
-
-    -   **For CPU-only:**
-        ```bash
-        pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-        pip install -r backend/requirements.txt
-        ```
-
-    -   **For GPU-acceleration (NVIDIA CUDA required):**
-        ```bash
-        pip install torch==2.1.2+cu121 torchvision==0.16.2+cu121 torchaudio==2.1.2 --extra-index-url https://download.pytorch.org/whl/cu121
-        pip install -r backend/requirements.txt
-        ```
-
-3.  **Download AI Models**
-    The Docker build process does this automatically, but for a manual setup, you must download the models yourself.
     ```bash
-    # Create the directory
-    mkdir backend/models
-
-    # Download models into the new directory
-    wget -O backend/models/GFPGANv1.4.pth https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.4.pth
-    wget -O backend/models/RealESRGAN_x4plus.pth https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth
+    pip install -r backend/requirements.txt
     ```
 
-4.  **Run the Application**
+  - **For GPU-acceleration (NVIDIA CUDA required):**
+
     ```bash
-    python backend/app.py
+    pip install torch==2.1.2+cu121 torchvision==0.16.2+cu121 torchaudio==2.1.2 --extra-index-url [https://download.pytorch.org/whl/cu121](https://download.pytorch.org/whl/cu121)
     ```
-    - The application will be available at `http://localhost:5000`.
 
-</details>
+    ```bash
+    pip install -r backend/requirements.txt
+    ```
 
-<br>
+#### **Step 4: Download AI Models**
 
-<details>
-<summary>🛠️ Technical Details (API, Configuration, etc.)</summary>
+```bash
+mkdir backend/models
+```
+
+```bash
+wget -O backend/models/GFPGANv1.4.pth [https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.4.pth](https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.4.pth)
+```
+
+```bash
+wget -O backend/models/RealESRGAN_x4plus.pth [https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth](https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth)
+```
+
+#### **Step 5: Run the Application**
+
+```bash
+python backend/app.py
+```
+
+  - The application will be available at `http://localhost:5000`.
+
+\</details\>
+
+\<br\>
+
+\<details\>
+\<summary\>🛠️ **Technical Details (API, Configuration, etc.)**\</summary\>
 
 #### Project Structure
 
 ```
 ImageRepair-AI/
 ├── backend/
-│   ├── app.py                 \# Flask backend with task queue
-│   ├── Dockerfile.cpu         \# CPU Docker image definition
-│   ├── Dockerfile.gpu         \# GPU Docker image definition
-│   └── requirements.txt       \# Python dependencies
+│   ├── app.py                 # Flask backend with task queue
+│   ├── Dockerfile.cpu         # CPU Docker image definition
+│   ├── Dockerfile.gpu         # GPU Docker image definition
+│   └── requirements.txt       # Python dependencies
 ├── assets/
 │   └── (comparison images)
-├── .gitignore                 \# Specifies files for Git to ignore
-├── docker-compose.cpu.yml     \# Docker Compose for CPU
-├── docker-compose.gpu.yml     \# Docker Compose for GPU
-├── index.html                 \# Frontend single-page application
-└── README.md                  \# This file
+├── .gitignore                 # Specifies files for Git to ignore
+├── docker-compose.cpu.yml     # Docker Compose for CPU
+├── docker-compose.gpu.yml     # Docker Compose for GPU
+├── index.html                 # Frontend single-page application
+└── README.md                  # This file
 ```
+
 #### API Endpoints
+
 All endpoints are defined in `backend/app.py`.
 
 | Endpoint | Method | Description |
@@ -146,11 +191,17 @@ All endpoints are defined in `backend/app.py`.
 | `/api/cancel/<task_id>`| `POST` | Requests to cancel a task. |
 | `/api/health` | `GET` | Provides a health check of the service. |
 
-</details>
+\</details\>
 
 ## 🙏 Acknowledgments
 
-This project stands on the shoulders of giants. Our heartfelt thanks go to the creators of these incredible open-source models:
--   [GFPGAN](https://github.com/TencentARC/GFPGAN)
--   [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN)
--   [BasicSR](https://github.com/XPixelGroup/BasicSR)
+This project stands on the shoulders of giants. My heartfelt thanks go to the creators of these incredible open-source models:
+
+  - [GFPGAN](https://github.com/TencentARC/GFPGAN)
+  - [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN)
+  - [BasicSR](https://github.com/XPixelGroup/BasicSR)
+
+<!-- end list -->
+
+```
+```
