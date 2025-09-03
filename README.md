@@ -1,7 +1,3 @@
-好的，当然可以。
-
-这是一个可以直接复制粘贴的完整 `README.md` 文件，已为您格式化好。
-
 ````markdown
 # ImageRepair AI
 
