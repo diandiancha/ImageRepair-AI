@@ -123,7 +123,6 @@ wget -O backend/models/RealESRGAN_x4plus.pth https://github.com/xinntao/Real-ESR
 **Step 5: Run the Application**
 
 ```bash
-# From the root "ImageRepair-AI" directory
 python backend/app.py
 ```
 
