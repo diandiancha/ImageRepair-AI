@@ -17,7 +17,6 @@
 
 This project is engineered for a superior user experience, giving you more insight and control over the image restoration process.
 
--   **AI-Powered Image Restoration**: Uses GFPGAN and Real-ESRGAN models to restore and enhance images with remarkable quality.
 -   **Real-Time Processing Status**: Track processing progress with status updates and estimated completion times.
 -   **Dual-AI Enhancement Pipeline**: Combines the strengths of two powerful AI models: **GFPGAN** specializes in restoring faces with stunning realism, while **Real-ESRGAN** upscales and enhances the entire image, including backgrounds.
 -   **User-Centric Interface**: A clean and modern UI featuring drag-and-drop, direct URL processing, an interactive before/after comparison slider, and multi-language support (English, 简体中文, 繁體中文, 日本語, 한국어).
