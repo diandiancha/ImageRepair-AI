@@ -41,7 +41,7 @@ The recommended way to run this project is with Docker, which handles all depend
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/diandiancha/ImageRepair-AI.git](https://github.com/diandiancha/ImageRepair-AI.git)
+    git clone https://github.com/diandiancha/ImageRepair-AI.git
     cd ImageRepair-AI
     ```
 
@@ -64,7 +64,7 @@ The `--build` flag is only necessary for the first launch.
 ---
 
 <details>
-<summary>💻 **For Developers: Manual Python Virtual Environment Setup**</summary>
+<summary>💻 For Developers: Manual Python Virtual Environment Setup</summary>
 
 This method is for users who want to run the application outside of Docker.
 
@@ -85,13 +85,13 @@ This method is for users who want to run the application outside of Docker.
 
     -   **For CPU-only:**
         ```bash
-        pip install torch torchvision torchaudio --index-url [https://download.pytorch.org/whl/cpu](https://download.pytorch.org/whl/cpu)
+        pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
         pip install -r backend/requirements.txt
         ```
 
     -   **For GPU-acceleration (NVIDIA CUDA required):**
         ```bash
-        pip install torch==2.1.2+cu121 torchvision==0.16.2+cu121 torchaudio==2.1.2 --extra-index-url [https://download.pytorch.org/whl/cu121](https://download.pytorch.org/whl/cu121)
+        pip install torch==2.1.2+cu121 torchvision==0.16.2+cu121 torchaudio==2.1.2 --extra-index-url https://download.pytorch.org/whl/cu121
         pip install -r backend/requirements.txt
         ```
 
@@ -102,8 +102,8 @@ This method is for users who want to run the application outside of Docker.
     mkdir backend/models
 
     # Download models into the new directory
-    wget -O backend/models/GFPGANv1.4.pth [https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.4.pth](https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.4.pth)
-    wget -O backend/models/RealESRGAN_x4plus.pth [https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth](https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth)
+    wget -O backend/models/GFPGANv1.4.pth https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.4.pth
+    wget -O backend/models/RealESRGAN_x4plus.pth https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth
     ```
 
 4.  **Run the Application**
@@ -117,7 +117,7 @@ This method is for users who want to run the application outside of Docker.
 <br>
 
 <details>
-<summary>🛠️ **Technical Details (API, Configuration, etc.)**</summary>
+<summary>🛠️ Technical Details (API, Configuration, etc.)</summary>
 
 #### Project Structure
 ````
