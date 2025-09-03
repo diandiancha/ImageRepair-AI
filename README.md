@@ -168,21 +168,17 @@ All endpoints are defined in `backend/app.py`.
 
 ## 🤝 Contributing
 
->**Contributions are welcome! Please follow these steps:**
+**Contributions are welcome! Please follow these steps:**
 
-Fork the repository
-
-Create a feature branch
-
-Make your changes
-
-Test thoroughly
-
-Submit a pull request
+1. [Fork the repository](https://github.com/diandiancha/ImageRepair-AI/fork)
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Test thoroughly
+5. Submit a [pull request](https://github.com/diandiancha/ImageRepair-AI/pulls)
 
 ## 📄 License
 
-This project is open-source and available under the MIT License.
+This project is open-source and available under the [MIT License](https://github.com/diandiancha/ImageRepair-AI/blob/main/LICENSE).
 
 ## 🙏 Acknowledgments
 
