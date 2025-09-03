@@ -168,7 +168,7 @@ All endpoints are defined in `backend/app.py`.
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow these steps:
+>**Rmark** Contributions are welcome! Please follow these steps:
 
 Fork the repository
 
