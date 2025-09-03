@@ -171,9 +171,13 @@ All endpoints are defined in `backend/app.py`.
 Contributions are welcome! Please follow these steps:
 
 Fork the repository
+
 Create a feature branch
+
 Make your changes
+
 Test thoroughly
+
 Submit a pull request
 
 ## 📄 License
