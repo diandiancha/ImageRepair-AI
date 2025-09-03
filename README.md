@@ -64,7 +64,7 @@ The `--build` flag is only necessary for the first launch.
 ---
 
 <details>
-<summary>💻 **For Developers: Manual Python Virtual Environment Setup**</summary>
+<summary>**💻 For Developers: Manual Python Virtual Environment Setup**</summary>
 
 This method is for users who want to run the application outside of Docker.
 
@@ -81,7 +81,7 @@ This method is for users who want to run the application outside of Docker.
     ```
 
 2.  **Install Dependencies**
-    [cite_start]The dependencies are listed in `backend/requirements.txt`. [cite: 2]
+    The dependencies are listed in `backend/requirements.txt`.
 
     -   **For CPU-only:**
         ```bash
@@ -90,14 +90,14 @@ This method is for users who want to run the application outside of Docker.
         ```
 
     -   **For GPU-acceleration (NVIDIA CUDA required):**
-        [cite_start]This command is based on the instructions in the original `Readme.txt`. [cite: 6]
+        This command is based on the instructions in the original `Readme.txt`. 
         ```bash
         pip install torch==2.1.2+cu121 torchvision==0.16.2+cu121 torchaudio==2.1.2 --extra-index-url [https://download.pytorch.org/whl/cu121](https://download.pytorch.org/whl/cu121)
         pip install -r backend/requirements.txt
         ```
 
 3.  **Download AI Models**
-    The Docker build process does this automatically, but for a manual setup, you must download the models yourself. [cite_start]The required models are specified in the Dockerfiles. [cite: 8, 3]
+    The Docker build process does this automatically, but for a manual setup, you must download the models yourself.The required models are specified in the Dockerfiles.
     ```bash
     # Create the directory
     mkdir backend/models
@@ -118,7 +118,7 @@ This method is for users who want to run the application outside of Docker.
 <br>
 
 <details>
-<summary>🛠️ **Technical Details (API, Configuration, etc.)**</summary>
+<summary>**🛠️ Technical Details (API, Configuration, etc.)**</summary>
 
 #### Project Structure
 ````
