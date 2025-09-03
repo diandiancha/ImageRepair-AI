@@ -1,4 +1,3 @@
-````markdown
 # ImageRepair AI
 
 <div align="center">
@@ -203,5 +202,4 @@ This project stands on the shoulders of giants. My heartfelt thanks go to the cr
 
 <!-- end list -->
 
-```
 ```
