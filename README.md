@@ -154,4 +154,3 @@ This project stands on the shoulders of giants. Our heartfelt thanks go to the c
 -   [GFPGAN](https://github.com/TencentARC/GFPGAN)
 -   [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN)
 -   [BasicSR](https://github.com/XPixelGroup/BasicSR)
-```
