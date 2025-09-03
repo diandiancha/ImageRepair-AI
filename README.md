@@ -120,7 +120,6 @@ This method is for users who want to run the application outside of Docker.
 <summary>🛠️ Technical Details (API, Configuration, etc.)</summary>
 
 #### Project Structure
-````
 
 ImageRepair-AI/
 ├── backend/
@@ -135,8 +134,6 @@ ImageRepair-AI/
 ├── docker-compose.gpu.yml     \# Docker Compose for GPU
 ├── index.html                 \# Frontend single-page application
 └── README.md                  \# This file
-
-```
 
 #### API Endpoints
 All endpoints are defined in `backend/app.py`.
