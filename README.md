@@ -59,7 +59,7 @@ Access the web interface at: `http://localhost:5001`
 #### **GPU Minimum Requirements**
 - **NVIDIA GPU**: GTX 1060 6GB or better
 - **VRAM**: 6GB+ for optimal performance
-- **CUDA**: Compatible GPU with CUDA 11.8+ support
+- **CUDA**: Compatible GPU with CUDA 12.1+ support
 - **RAM**: 8GB system memory (16GB recommended for large images)
 - **Storage**: 5GB free space for models and dependencies
 
