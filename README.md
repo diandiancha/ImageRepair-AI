@@ -17,15 +17,15 @@
 
 Ever used an online AI tool and been left staring at a spinning loader with no idea what's happening? ImageRepair AI is engineered to be different. It's not just a script, but a robust service designed for a transparent and interactive user experience.
 
--   [cite_start]**Intelligent Task Queue**: We use an asynchronous, multi-worker task queue on the backend. [cite: 5] This means you can submit multiple images, and the system will process them efficiently without freezing. [cite_start]You'll even know your position in the queue. [cite: 5]
+-   **Intelligent Task Queue**: We use an asynchronous, multi-worker task queue on the backend. This means you can submit multiple images, and the system will process them efficiently without freezing. You'll even know your position in the queue.
 
--   **Real-Time Status & Control**: Every job you submit gets a unique Task ID. [cite_start]Use our API to get live updates on your image's status—from "pending" to "processing" to "completed". [cite: 5] [cite_start]If you change your mind, you can even request to cancel an ongoing task. [cite: 5]
+-   **Real-Time Status & Control**: Every job you submit gets a unique Task ID.Use our API to get live updates on your image's status—from "pending" to "processing" to "completed".If you change your mind, you can even request to cancel an ongoing task. 
 
--   **Dual-AI Enhancement Pipeline**: We combine the strengths of two powerful AI models. [cite_start]**GFPGAN** focuses on restoring faces with stunning realism, while **Real-ESRGAN** upscales and enhances the entire image background. [cite: 5] The result is a comprehensively repaired photo.
+-   **Dual-AI Enhancement Pipeline**: We combine the strengths of two powerful AI models.**GFPGAN** focuses on restoring faces with stunning realism, while **Real-ESRGAN** upscales and enhances the entire image background.The result is a comprehensively repaired photo.
 
 -   **User-Centric Interface**: The frontend is designed for a smooth workflow, featuring a multi-language interface, an interactive before/after comparison slider, and the ability to process images directly from a URL.
 
--   [cite_start]**Built for Deployment**: With pre-configured Docker setups for both CPU and GPU, you can deploy this project with a single command, confident that the environment is consistent and reliable. [cite: 9, 1]
+-   **Built for Deployment**: With pre-configured Docker setups for both CPU and GPU, you can deploy this project with a single command, confident that the environment is consistent and reliable.
 
 ## 🚀 Getting Started
 
