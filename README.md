@@ -34,6 +34,8 @@ The recommended way to run this project is with Docker, which handles all depend
 
 ### Installation & Launch with Docker
 
+> **Remark：** Before starting, make sure Docker is started.
+
 #### **CPU Version (works on any system)**
 
 ```bash
