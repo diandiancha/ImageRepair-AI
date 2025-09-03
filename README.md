@@ -17,7 +17,7 @@
 
 This project is engineered for a superior user experience, giving you more insight and control over the image restoration process.
 
--   **Asynchronous Task Queue**: The backend uses a worker and queue system to process images in the background. Submit multiple images without freezing the app; each request is added to a queue, and its status can be tracked individually.
+-   **Asynchronous Task Queue**: The backend uses a worker and queue system to process images in the background. Tasks are queued and processed sequentially with real-time status updates.
 -   **Real-Time Status Tracking**: Each submission receives a unique Task ID. The interface automatically polls the backend to show if your image is `pending` (with its queue position) or actively `processing`, providing clear, real-time feedback.
 -   **Dual-AI Enhancement Pipeline**: Combines the strengths of two powerful AI models: **GFPGAN** specializes in restoring faces with stunning realism, while **Real-ESRGAN** upscales and enhances the entire image, including backgrounds.
 -   **User-Centric Interface**: A clean and modern UI featuring drag-and-drop, direct URL processing, an interactive before/after comparison slider, and multi-language support (English, 简体中文, 繁體中文, 日本語, 한국어).
@@ -38,10 +38,10 @@ The recommended way to run this project is with Docker, which handles all depend
 #### **CPU Version (works on any system)**
 
 ```bash
-git clone [https://github.com/diandiancha/ImageRepair-AI.git](https://github.com/diandiancha/ImageRepair-AI.git)
+git clone https://github.com/diandiancha/ImageRepair-AI.git
 cd ImageRepair-AI
 docker-compose -f docker-compose.cpu.yml up --build
-````
+```
 
 Access the web interface at: `http://localhost:5002`
 
@@ -50,16 +50,23 @@ Access the web interface at: `http://localhost:5002`
 #### **GPU Version (for high performance with an NVIDIA GPU)**
 
 ```bash
-git clone [https://github.com/diandiancha/ImageRepair-AI.git](https://github.com/diandiancha/ImageRepair-AI.git)
+git clone https://github.com/diandiancha/ImageRepair-AI.git
 cd ImageRepair-AI
 docker-compose -f docker-compose.gpu.yml up --build
 ```
 
 Access the web interface at: `http://localhost:5001`
 
-\<br\>
-\<details\>
-\<summary\>🛠️ Technical Details\</summary\>
+#### **GPU Minimum Requirements**
+- **NVIDIA GPU**: GTX 1060 6GB or better
+- **VRAM**: 6GB+ for optimal performance
+- **CUDA**: Compatible GPU with CUDA 11.8+ support
+- **RAM**: 8GB system memory (16GB recommended for large images)
+- **Storage**: 5GB free space for models and dependencies
+
+<br>
+<details>
+<summary>🛠️ Technical Details</summary>
 
 ### Project Structure
 
@@ -90,16 +97,16 @@ All endpoints are defined in `backend/app.py`.
 | `/api/cancel/<task_id>`| `POST` | Requests to cancel a pending or processing task.                         |
 | `/api/health`          | `GET`  | Provides a health check of the service, including model status and queue size. |
 
-\<br\>
-\<details\>
-\<summary\>💻 Manual Python Virtual Environment Setup\</summary\>
+<br>
+<details>
+<summary>💻 Manual Python Virtual Environment Setup</summary>
 
 This method is for developers who want to run the application outside of Docker.
 
 **Step 1: Clone Repository**
 
 ```bash
-git clone [https://github.com/diandiancha/ImageRepair-AI.git](https://github.com/diandiancha/ImageRepair-AI.git)
+git clone https://github.com/diandiancha/ImageRepair-AI.git
 cd ImageRepair-AI
 ```
 
@@ -126,14 +133,14 @@ source venv/bin/activate
 *For CPU-only:*
 
 ```bash
-pip install torch torchvision torchaudio --index-url [https://download.pytorch.org/whl/cpu](https://download.pytorch.org/whl/cpu)
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 pip install -r backend/requirements.txt
 ```
 
 *For GPU-acceleration (NVIDIA CUDA 12.1 required):*
 
 ```bash
-pip install torch==2.1.2+cu121 torchvision==0.16.2+cu121 torchaudio==2.1.2+cu121 --extra-index-url [https://download.pytorch.org/whl/cu121](https://download.pytorch.org/whl/cu121)
+pip install torch==2.1.2+cu121 torchvision==0.16.2+cu121 torchaudio==2.1.2+cu121 --extra-index-url https://download.pytorch.org/whl/cu121
 pip install -r backend/requirements.txt
 ```
 
@@ -141,8 +148,8 @@ pip install -r backend/requirements.txt
 
 ```bash
 mkdir backend/models
-wget -O backend/models/GFPGANv1.4.pth [https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.4.pth](https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.4.pth)
-wget -O backend/models/RealESRGAN_x4plus.pth [https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth](https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth)
+wget -O backend/models/GFPGANv1.4.pth https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.4.pth
+wget -O backend/models/RealESRGAN_x4plus.pth https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth
 ```
 
 **Step 5: Run the Application**
@@ -154,8 +161,8 @@ python backend/app.py
 
 The application will be available at `http://localhost:5000`.
 
-\</details\>
-\</details\>
+</details>
+</details>
 
 ## 🙏 Acknowledgments
 
@@ -164,5 +171,3 @@ This project stands on the shoulders of giants. Our heartfelt thanks go to the c
   - [**GFPGAN**](https://github.com/TencentARC/GFPGAN)
   - [**Real-ESRGAN**](https://github.com/xinntao/Real-ESRGAN)
   - [**BasicSR**](https://github.com/xinntao/BasicSR)
-
-<!-- end list -->
