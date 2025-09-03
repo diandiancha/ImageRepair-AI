@@ -68,6 +68,8 @@ Access the web interface at: `http://localhost:5001`
 ### Method 2: Manual Python Virtual Environment Setup
 
 This method is for developers who want to run the application outside of Docker.
+This project uses Python 3.10 as the main development environment. The compatibility with other Python versions is unknown. 
+Therefore, if you need to deploy the Python version project yourself, please ensure that the environment is correct.
 
 **Step 1: Clone Repository**
 
