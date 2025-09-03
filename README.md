@@ -182,7 +182,7 @@ This project is open-source and available under the [MIT License](https://github
 
 ## 🙏 Acknowledgments
 
-This project stands on the shoulders of giants. Our heartfelt thanks go to the creators of these incredible open-source models:
+This project stands on the shoulders of giants. My heartfelt thanks go to the creators of these incredible open-source models:
 
   - [**GFPGAN**](https://github.com/TencentARC/GFPGAN)
   - [**Real-ESRGAN**](https://github.com/xinntao/Real-ESRGAN)
