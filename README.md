@@ -150,7 +150,8 @@ ImageRepair-AI/
 ├── docker-compose.cpu.yml     # Docker Compose configuration for CPU
 ├── docker-compose.gpu.yml     # Docker Compose configuration for GPU
 ├── index.html                 # Single-page frontend application
-└── README.md
+├── README.md            
+└── LICENSE
 ```
 
 ### API Endpoints
