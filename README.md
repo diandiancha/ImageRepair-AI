@@ -121,6 +121,7 @@ This method is for users who want to run the application outside of Docker.
 
 #### Project Structure
 
+```
 ImageRepair-AI/
 ├── backend/
 │   ├── app.py                 \# Flask backend with task queue
@@ -134,7 +135,7 @@ ImageRepair-AI/
 ├── docker-compose.gpu.yml     \# Docker Compose for GPU
 ├── index.html                 \# Frontend single-page application
 └── README.md                  \# This file
-
+```
 #### API Endpoints
 All endpoints are defined in `backend/app.py`.
 
