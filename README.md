@@ -1,4 +1,3 @@
-````markdown
 # ImageRepair AI
 
 <div align="center">
