@@ -166,5 +166,3 @@ This project stands on the shoulders of giants. Our heartfelt thanks go to the c
   - [**BasicSR**](https://github.com/xinntao/BasicSR)
 
 <!-- end list -->
-
-```
