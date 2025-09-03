@@ -166,6 +166,20 @@ All endpoints are defined in `backend/app.py`.
 
 </details>
 
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these steps:
+
+Fork the repository
+Create a feature branch
+Make your changes
+Test thoroughly
+Submit a pull request
+
+## 📄 License
+
+This project is open-source and available under the MIT License.
+
 ## 🙏 Acknowledgments
 
 This project stands on the shoulders of giants. Our heartfelt thanks go to the creators of these incredible open-source models:
