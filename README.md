@@ -74,7 +74,7 @@ This method is for developers who want to run the application outside of Docker.
 
 ```bash
 git clone https://github.com/diandiancha/ImageRepair-AI.git
-cd ImageRepair-AI
+cd ImageRepair-AI/backend
 ```
 
 **Step 2: Create and Activate Virtual Environment**
